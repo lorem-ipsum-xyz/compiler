@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live Code Editor</title>
+  <style>
+    .b{margin-bottom:0.8rem}
+    a{text-decoration: none}
+    ul{list-style-type: none}
+    *{padding: 0;margin: 0;box-sizing: border-box;font-family: Arial, sans-serif}
+    body{
+      background: #373A40;
+    }
+    .container{
+      width: 100%;
+      padding: 1rem 100px;
+    }
+    
+    .burrat{filter:blur(5px)}
+    
+    .kpal-cont{
+      background: #181C14;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 4px 4px 0 0
+    }
+    
+    #language{
+      border: 1px dotted grey;
+      outline: none;
+      color: white;
+      background: none;
+      padding: 1px 5px;
+      cursor: pointer;
+      color: #95A695;
+    }
+    #run{
+      font-size: 14px;
+      padding: 3px 6px;
+      background: #0B8918;
+      color: #D3FED8;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #run:disabled{
+      background: #9ECBAA;
+      color: #064F19;
+    }
+    
+    .codext{
+      background: #686D76;
+      padding: 10px 7px;
+      border-bottom: 3px solid #C8C8C8;
+    }
+    
+    .code-container, .input-container{
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .label{
+      background: #000000;
+      color: #A49A93;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 6px 6px 0 0;
+    }
+    .label i{margin-right:5px}
+    textarea{
+      width: 100%;
+      border: none;
+      font-size: 14px;
+      outline: none;
+      padding: 10px;
+      resize: vertical;
+      border-radius: 0 0 6px 6px;
+      background: #393E46;
+    }
+    
+    #code{
+      color: white;
+      height: 16rem;
+      letter-spacing: 0.7px;
+    }
+    #input{
+      height: 6rem;
+      color: #ADD8AE;
+    }
+    .input-container .label:after{
+      content: '';
+      display: inline-block;
+      animation: dotdot 2s steps(4) infinite
+    }
+    
+    @keyframes dotdot{
+      0%{content: '';}
+      25%{content: '.'}
+      50%{content: '..'}
+      75%{content: '...'}
+      100%{content: ''}
+    }
+    
+    .footerye{
+      background: #686D76;
+    }
+    .stats{
+      background: #353935;
+      padding: 10px;
+      color: #E7E7E7;
+      font-size: 12px;
+    }
+    .output{
+      display: flex;
+      flex-direction: column;
+    }
+    .output-label{
+      background: #000000;
+      color: #A49A93;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-bottom: 1px solid #ACACAC;
+    }
+    .output .fa-circle{margin-right:3px}
+    pre{
+      background: #000000;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #FAFAFA;
+      font-size: 13px;
+      padding: 10px;
+    }
+    
+    #text{display:flex;flex-direction: column-reverse}
+    
+    .error{
+      background: #FFBDBD !important;
+      font-size: 13px;
+      color: #FF0000;
+      padding: 5px;
+    }
+    .warning{
+      background: #FFCF96 !important;
+      font-size: 13px;
+      padding: 5px;
+    }
+    
+    @media(max-width: 768px){
+      .container{padding: 1rem 10px}
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    
+    <div class="kpal-cont">
+      <div class="lang-container">
+        <select name="language" id="language" onchange="Hacker()">
+          <option value="23">Javascript</option>
+          <option value="24">Python</option>
+          <option value="4">Java</option>
+        </select>
+      </div>
+      <div class="run-button">
+        <button id='run' onclick="run()"><i class="fa-solid fa-play"></i> RUN</button>
+      </div>
+    </div>
+    
+    <div class="codext">
+      <div class="code-container b">
+        <span class="label"><i class="fa-solid fa-code"></i> CODE</span>
+        <span class="item">
+          <textarea name="code" id="code" wrap="off">//nodejs v8.10.0
+
+console.log("Hello, World!");</textarea>
+        </span>
+      </div>
+      <div class="input-container">
+        <span class="label"><i class="fa-solid fa-dollar-sign"></i>~ INPUT</span>
+        <span class="item">
+          <textarea name="input" id="input" wrap='off'></textarea>
+        </span>
+      </div>
+    </div>
+    
+    <div class="footerye">
+      <div class="stats"></div>
+      <div class="output">
+        <span class="output-label"><i class="fa-solid fa-circle"></i> OUTPUT</span>
+        <span id="text">
+          <pre id="output"></pre>
+        </span>
+      </div>
+    </div>
+    
+  </div>
+  
+</body>
+<script>
+const output_container = document.getElementById('text');
+const btn = document.getElementById('run');
+
+function createWarning(message){
+  output_container.innerHTML += `<div class='warning'>
+    <p><i class='fa-solid fa-warning'></i> ${message}</p>
+  </div>`
+}
+function createError(message){
+  output_container.innerHTML += `<div class='error'>
+      <p><i class='fa-solid fa-circle-exclamation'></i> ${message}</p>
+  </div>`
+}
+
+function run(){
+  document.getElementById('text').innerHTML = "<pre id='output'></pre>"
+  const LANG = document.getElementById('language').value
+  const CODE = document.getElementById('code').value;
+  const INPUT = document.getElementById('input').value;
+  const OUTPUT = document.getElementById('output');
+  if (!CODE){
+    return;
+  }else{
+    btn.setAttribute('disabled', true)
+    execute(LANG, CODE, INPUT, OUTPUT)
+  }
+}
+
+function Hacker(){
+  const editor = document.getElementById('code')
+  const lang = document.getElementById('language').value
+  
+  if (lang === '4'){
+    editor.value = `//'main' method must be in a class 'Rextester'.
+//openjdk version '11.0.5' 
+    
+import java.util.*;
+import java.lang.*;
+    
+class Rextester{
+  public static void main(String args[]){
+    System.out.println("Hello, World!");
+  }
+}`
+  }else if(lang === '24'){
+    editor.value = '#python 3.6.9\n\nprint("Hello, World")'
+  }else{
+    editor.value = '//nodejs v8.10.0\n\nconsole.log("Hello, World!");'
+  }
+}
+
+async function execute(lang, code, input, output) {
+  try{
+    const response = await fetch('/api/compiler',{
+      method: 'POST',
+      headers: {"Content-Type": 'application/json'},
+      body: JSON.stringify({
+        "lang": lang,
+        "program": code,
+        "input": input
+      })
+    })
+    const data = await response.json()
+    document.querySelector('.stats').innerHTML = '<i class="fa-solid fa-circle-info"></i> ' + data.Stats
+    
+    if (data.Warnings)createWarning(data.Warnings);
+    if (data.Errors)createError(data.Errors);
+    
+    output.textContent = data.Result
+  }catch(error){
+    console.log('Error: ', error.message)
+  }
+  btn.removeAttribute('disabled')
+}
+</script>
+</html>
