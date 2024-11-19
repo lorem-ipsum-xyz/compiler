@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 import requests
+import os
 
+PORT = os.getenv('PORT', 5000)
 app = Flask(__name__)
 
 @app.route('/')
@@ -17,4 +19,4 @@ def compiler():
   return jsonify(res)
 
 if __name__ == '__main__':
-  app.run()
+  app.run(host='0.0.0.0',port=PORT)
